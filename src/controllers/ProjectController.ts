@@ -50,5 +50,27 @@ export class ProjectController {
         }
     };
 
+
+
+    static updateProject = async (req: Request, res: Response): Promise<void> => {
+        const { id } = req.params;
+
+        try {
+            const project = await Project.findByIdAndUpdate(id, req.body);
+
+            if (!project) {
+                res.status(404).json({ error: 'Proyecto no encontrado' });
+                return;
+            }
+
+
+            await project.save()
+            res.send('Proyecto Actualizado')
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Error del servidor' }); // ✅ respuesta si falla
+        }
+    };
+
 }
 
