@@ -3,6 +3,7 @@ import { body, param } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
+import { validateProjectExists } from "../middleware/project";
 
 const router = Router()
 
@@ -17,18 +18,13 @@ router.post('/',
     ProjectController.createProject
 )
 
-
-
 router.get('/', ProjectController.getAllProject)
-
-
 
 router.get('/:id',
     param('id').isMongoId().withMessage('ID no Válido'),
     handleInputErrors,
     ProjectController.getProjectById
 )
-
 
 router.put('/:id',
     param('id').isMongoId().withMessage('ID no Válido'),
@@ -42,7 +38,6 @@ router.put('/:id',
     ProjectController.updateProject
 )
 
-
 router.delete('/:id',
     param('id').isMongoId().withMessage('ID no Válido'),
     handleInputErrors,
@@ -50,8 +45,10 @@ router.delete('/:id',
 )
 
 
+
 // Routes for tasks
 router.post('/:projectId/tasks',
+    validateProjectExists,
     TaskController.createTask
 )
 
