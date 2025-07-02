@@ -49,6 +49,22 @@ export class TaskController {
     }
 
 
-
+    static updateTask = async (req: Request, res: Response) => {
+        try {
+            const { taskId } = req.params
+            const task = await Task.findByIdAndUpdate(taskId, req.body)
+            if (!task) {
+                res.status(404).json({ error: 'Tarea no encontrado' });
+                return;
+            }
+            if (task.project.toString() !== req.project.id) {
+                res.status(400).json({ error: 'Acción no valida' });
+                return;
+            }
+            res.send("Tarea Actualizada Correctamente")
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' })
+        }
+    }
 
 }
