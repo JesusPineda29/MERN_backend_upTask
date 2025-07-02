@@ -32,11 +32,6 @@ export class TaskController {
 
     static getTaskById = async (req: Request, res: Response) => {
         try {
-
-            if (req.task.project.toString() !== req.project.id) {
-                res.status(400).json({ error: 'Acción no valida' });
-                return;
-            }
             res.json(req.task)
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
@@ -47,11 +42,6 @@ export class TaskController {
 
     static updateTask = async (req: Request, res: Response) => {
         try {
-
-            if (req.task.project.toString() !== req.project.id) {
-                res.status(400).json({ error: 'Acción no valida' });
-                return;
-            }
             req.task.name = req.body.name
             req.task.description = req.body.description
             await req.task.save()
@@ -79,8 +69,6 @@ export class TaskController {
             req.task.status = status
             await req.task.save()
             res.send('Tarea actualizada')
-
-
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
         }

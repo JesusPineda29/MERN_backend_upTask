@@ -24,3 +24,15 @@ export async function taskExists(req: Request, res: Response, next: NextFunction
         res.status(500).json({ error: 'Hubo un error' })
     }
 }
+
+
+export function taskBelongsToProject(req: Request, res: Response, next: NextFunction) {
+    if (req.task.project.toString() !== req.project.id.toString()) {
+        res.status(400).json({ error: 'Acción no valida' });
+        return;
+    }
+    next()
+}
+
+
+
