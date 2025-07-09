@@ -9,6 +9,7 @@ const taskStatus = {
     UNDER_REVIEW: 'underReview',
     COMPLETED: 'completed'
 } as const
+
 export type TaskStatus = typeof taskStatus[keyof typeof taskStatus]
 
 
