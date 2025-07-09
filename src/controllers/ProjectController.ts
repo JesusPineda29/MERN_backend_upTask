@@ -7,6 +7,8 @@ export class ProjectController {
 
     static createProject = async (req: Request, res: Response) => {
         const project = new Project(req.body)
+
+
         try {
             await project.save()
             res.send('proyecto creado correctamente')
@@ -62,7 +64,7 @@ export class ProjectController {
             project.clientName = req.body.clientName
             project.projectName = req.body.projectName
             project.description = req.body.description
-            
+
             await project.save()
             res.send('Proyecto Actualizado')
         } catch (error) {
