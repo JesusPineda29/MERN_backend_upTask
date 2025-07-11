@@ -16,9 +16,9 @@ export class AuthController {
 
       // Crear usuario
       const user = new User(req.body);
+      // Hash Password
       user.password = await hashPassword(password);
       await user.save();
-
       res.status(201).send('Cuenta creada, revisa tu email para confirmarla');
     } catch (error) {
       res.status(500).json({ error: 'Hubo un error' });
