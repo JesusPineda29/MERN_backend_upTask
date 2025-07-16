@@ -57,6 +57,11 @@ export class AuthController {
                 return;
             }
 
+            const user = await User.findById(tokenExist.user)
+                user.confirmed = true
+
+                await Promise.allSettled([ user.save(), tokenExist.deleteOne()])
+                res.send('Cuenta confirmada correctamente')
 
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' });
