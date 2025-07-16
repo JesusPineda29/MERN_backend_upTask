@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import User from '../models/User';
-import { hashPassword } from '../utils/auth';
+import { chackPaswword, hashPassword } from '../utils/auth';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
@@ -101,7 +101,15 @@ export class AuthController {
                 return;
             }
 
-            console.log(user)
+            // Revisar password
+            const isPasswordCorrect = await chackPaswword(password, user.password)
+            if (isPasswordCorrect) {
+
+                const error = new Error('Password incorecto')
+                res.status(401).json({ error: error.message });
+                return;
+            }
+            res.send('Autenticado...')
 
 
         } catch (error) {
