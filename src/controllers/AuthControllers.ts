@@ -4,42 +4,63 @@ import { hashPassword } from '../utils/auth';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
+
 export class AuthController {
-  static createAccount = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { password, email } = req.body;
 
-      // Prevenir duplicados
-      const userExist = await User.findOne({ email });
-      if (userExist) {
-        res.status(409).json({ error: 'El usuario ya está registrado' });
-        return; // <- solo este return está bien (evita seguir ejecutando)
-      }
+    static createAccount = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { password, email } = req.body;
 
-      // Crear usuario
-      const user = new User(req.body);
+            // Prevenir duplicados
+            const userExist = await User.findOne({ email });
+            if (userExist) {
+                res.status(409).json({ error: 'El usuario ya está registrado' });
+                return; // <- solo este return está bien (evita seguir ejecutando)
+            }
 
-      // Hash Password
-      user.password = await hashPassword(password);
+            // Crear usuario
+            const user = new User(req.body);
 
-      // Generar Token
-      const token = new Token()
-      token.token = generateToken()
-      token.user = user.id
+            // Hash Password
+            user.password = await hashPassword(password);
 
-      // enviar el email
-      AuthEmail.sendConfirmationEmail({
-        email: user.email,
-        name: user.email,
-        token: token.token
-      })
+            // Generar Token
+            const token = new Token()
+            token.token = generateToken()
+            token.user = user.id
 
-      // almacenar en la base de datos
-      await Promise.allSettled([user.save(), token.save()])
+            // enviar el email
+            AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.email,
+                token: token.token
+            })
 
-      res.status(201).send('Cuenta creada, revisa tu email para confirmarla');
-    } catch (error) {
-      res.status(500).json({ error: 'Hubo un error' });
+            // almacenar en la base de datos
+            await Promise.allSettled([user.save(), token.save()])
+
+            res.status(201).send('Cuenta creada, revisa tu email para confirmarla');
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' });
+            return; // <- solo este return está bien (evita seguir ejecutando)
+        }
+    };
+
+
+    static confirmAccount = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { token } = req.body
+            const tokenExist = await Token.findOne({ token })
+            if (!tokenExist) {
+                const error = new Error('Token no válido')
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' });
+            return; // <- solo este return está bien (evita seguir ejecutando)
+        }
     }
-  };
 }
