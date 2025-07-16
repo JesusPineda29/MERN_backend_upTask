@@ -32,7 +32,7 @@ export class AuthController {
             // enviar el email
             AuthEmail.sendConfirmationEmail({
                 email: user.email,
-                name: user.email,
+                name: user.name,
                 token: token.token
             })
 
@@ -54,7 +54,7 @@ export class AuthController {
             const tokenExist = await Token.findOne({ token })
             if (!tokenExist) {
                 const error = new Error('Token no válido')
-                res.status(401).json({ error: error.message });
+                res.status(404).json({ error: error.message });
                 return;
             }
 
@@ -74,13 +74,34 @@ export class AuthController {
 
     static login = async (req: Request, res: Response): Promise<void> => {
         try {
+            // revisar si un usuario existe
             const { email, password } = req.body
             const user = await User.findOne({ email })
             if (!user) {
                 const error = new Error('Usuario no encontrado')
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            if (!user.confirmed) {
+                const token = new Token()
+                token.user = user.id
+                token.token = generateToken()
+                await token.save()
+
+                // enviar el email
+                AuthEmail.sendConfirmationEmail({
+                    email: user.email,
+                    name: user.name,
+                    token: token.token
+                })
+
+                const error = new Error('La cuenta no ha sido confirmada, hemos enviado un e-mail de confirmación')
                 res.status(401).json({ error: error.message });
                 return;
             }
+
+            console.log(user)
 
 
         } catch (error) {
