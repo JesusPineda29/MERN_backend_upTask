@@ -103,7 +103,7 @@ export class AuthController {
 
             // Revisar password
             const isPasswordCorrect = await chackPaswword(password, user.password)
-            if (isPasswordCorrect) {
+            if (!isPasswordCorrect) {
 
                 const error = new Error('Password incorecto')
                 res.status(401).json({ error: error.message });
@@ -156,4 +156,43 @@ export class AuthController {
             return; // <- solo este return está bien (evita seguir ejecutando)
         }
     };
+
+
+
+
+    static forgotPassword = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { email } = req.body;
+
+            // Usuario existe
+            const user = await User.findOne({ email });
+            if (!user) {
+                res.status(404).json({ error: 'El usuario no está registrado' });
+                return;
+            }
+
+
+            // Generar Token
+            const token = new Token()
+            token.token = generateToken()
+            token.user = user.id
+            await token.save()
+
+
+            // enviar el email
+            AuthEmail.sendPasswordResetToken({
+                email: user.email,
+                name: user.name,
+                token: token.token
+            })
+
+
+            res.status(201).send('Revisa tu email para restablecer la contraseña.');
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' });
+            return; // <- solo este return está bien (evita seguir ejecutando)
+        }
+    };
+
+
 }
