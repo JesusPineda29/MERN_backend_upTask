@@ -195,4 +195,25 @@ export class AuthController {
     };
 
 
+
+    static validateToken = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { token } = req.body
+
+            const tokenExist = await Token.findOne({ token })
+            if (!tokenExist) {
+                const error = new Error('Token no válido')
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            res.send('Token válido, Define tu nuevo password')
+
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' });
+            return; // <- solo este return está bien (evita seguir ejecutando)
+        }
+    }
+
+
 }
