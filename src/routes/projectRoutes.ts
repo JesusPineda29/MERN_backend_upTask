@@ -21,7 +21,7 @@ router.post('/',
     ProjectController.createProject
 )
 
-router.get('/', ProjectController.getAllProject)
+router.get('/', authenticate, ProjectController.getAllProject)
 
 router.get('/:id',
     param('id').isMongoId().withMessage('ID no Válido'),
