@@ -25,7 +25,7 @@ export class ProjectController {
         try {
             const Projects = await Project.find({
                 $or: [
-                    {manager: {$in: req.user.id}}
+                    { manager: { $in: req.user.id } }
                 ]
             })
             res.json(Projects)
@@ -47,7 +47,10 @@ export class ProjectController {
                 res.status(404).json({ error: 'Proyecto no encontrado' });
                 return; // ✅ este return evita que siga la ejecución
             }
-
+            if (project.manager.toString() !== req.user.id.toString()) {
+                res.status(404).json({ error: 'Acción no válida' });
+                return; // ✅ este return evita que siga la ejecución
+            }
             res.json(project); // ✅ solo una respuesta
         } catch (error) {
             console.log(error);
