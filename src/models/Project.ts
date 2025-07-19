@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, PopulatedDoc, Types } from "mongoose";
 import { ITask } from "./Task";
-
+import { IUser } from "./User";
 
 
 
@@ -9,6 +9,7 @@ export interface IprojectType extends Document { // esto es de typesScript
     clientName: string;
     description: string;
     tasks: PopulatedDoc<ITask & Document>[]
+    manager: PopulatedDoc<IUser & Document>
 }
 
 
@@ -33,8 +34,12 @@ const ProjectSchema: Schema = new Schema({ // esto es de Mongoose
             type: Types.ObjectId,
             ref: 'Task'
         }
-    ]
-}, {timestamps: true})
+    ],
+    manager: {
+        type: Types.ObjectId,
+        ref: 'User'
+    }
+}, { timestamps: true })
 
 
 const Project = mongoose.model<IprojectType>('Project', ProjectSchema)
