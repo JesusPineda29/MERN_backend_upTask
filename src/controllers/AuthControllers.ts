@@ -111,9 +111,9 @@ export class AuthController {
                 return;
             }
 
-            const token = generateJWT({id: user._id})
-            
-            res.send('Autenticado...')
+            const token = generateJWT({id: user.id})
+
+            res.send(token)
 
 
 
