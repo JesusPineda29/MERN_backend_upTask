@@ -111,7 +111,7 @@ export class AuthController {
                 return;
             }
 
-            const token = generateJWT({id: user.id})
+            const token = generateJWT({ id: user.id })
 
             res.send(token)
 
@@ -221,10 +221,10 @@ export class AuthController {
     }
 
 
-        static updatePasswordWithToken = async (req: Request, res: Response): Promise<void> => {
+    static updatePasswordWithToken = async (req: Request, res: Response): Promise<void> => {
         try {
             const { token } = req.params
-            const {password} = req.body
+            const { password } = req.body
 
             const tokenExist = await Token.findOne({ token })
             if (!tokenExist) {
@@ -233,7 +233,7 @@ export class AuthController {
                 return;
             }
 
-            const  user = await User.findById(tokenExist.user)
+            const user = await User.findById(tokenExist.user)
             user.password = await hashPassword(password)
 
             await Promise.allSettled([user.save(), tokenExist.deleteOne()])
@@ -245,7 +245,9 @@ export class AuthController {
         }
     }
 
+    static user = async (req: Request, res: Response) => {
+        res.json(req.user)
+    }
+
 
 }
-
-
