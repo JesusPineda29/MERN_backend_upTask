@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express'
-import Task, { ITask } from '../models/Task.js';
+import Task, { ITask } from '../models/Task';
 
 
 
