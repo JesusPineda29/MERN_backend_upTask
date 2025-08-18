@@ -4,7 +4,7 @@ import cors from 'cors'
 import morgan from "morgan";
 import { corsConfig } from "./config/cors";
 import { connectDB } from "./config/db";
-import authroutes from './routes/authroutes'
+import authroutes from './routes/authRoutes'
 import projectRoutes from './routes/projectRoutes'
 
 
