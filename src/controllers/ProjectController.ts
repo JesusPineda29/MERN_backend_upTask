@@ -21,19 +21,20 @@ export class ProjectController {
 
 
 
-    static getAllProject = async (req: Request, res: Response) => {
-        try {
-            const Projects = await Project.find({
-                $or: [
-                    { manager: { $in: req.user.id } }
-                ]
-            })
-            res.json(Projects)
-        } catch (error) {
-            console.log(error)
-        }
-        res.send('Todos los proyectos')
+static getAllProject = async (req: Request, res: Response) => {
+    try {
+        const Projects = await Project.find({
+            $or: [
+                { manager: { $in: req.user.id } }
+            ]
+        })
+        res.json(Projects) // ✅ respuesta única
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Error del servidor' }) // ✅ responde si hay error
     }
+}
+
 
 
 
