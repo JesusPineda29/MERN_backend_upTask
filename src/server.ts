@@ -12,6 +12,7 @@ dotenv.config()
 connectDB()
 
 const app = express()
+
 app.use(cors(corsConfig))
 
 // Logging
@@ -20,13 +21,23 @@ app.use(morgan('dev'))
 // Leer datos del formulario
 app.use(express.json())
 
+
+// Endpoint raíz opcional
+app.get("/", (req, res) => {
+  res.send("Backend funcionando!");
+});
+
+
+
 // Routes
 app.use('/api/auth', authroutes)
 app.use('/api/projects', projectRoutes)
 
 
 
-
+// Puerto
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
 
 export default app
 
